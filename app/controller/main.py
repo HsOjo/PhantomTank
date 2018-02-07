@@ -27,8 +27,7 @@ class MainWindow(Ui_MainWindow, QMainWindow):
         self.cb_dark.clicked.connect(self.__cb_dark_clicked)
 
     def __pb_inner_clicked(self):
-        [url, _] = QFileDialog.getOpenFileUrl(parent=self, caption='Set Inner Image')
-        path = url.path()
+        [path, _] = QFileDialog.getOpenFileName(parent=self, caption='Set Inner Image')
 
         if path != '':
             with open(path, 'br') as io:
@@ -40,8 +39,7 @@ class MainWindow(Ui_MainWindow, QMainWindow):
                 self.l_inner.setPixmap(pixmap)
 
     def __pb_outer_clicked(self):
-        [url, _] = QFileDialog.getOpenFileUrl(parent=self, caption='Set Outer Image')
-        path = url.path()
+        [path, _] = QFileDialog.getOpenFileName(parent=self, caption='Set Outer Image')
 
         if path != '':
             with open(path, 'br') as io:
@@ -73,8 +71,7 @@ class MainWindow(Ui_MainWindow, QMainWindow):
 
     def __pb_save_clicked(self):
         if self.img_result is not None:
-            [url, _] = QFileDialog.getSaveFileUrl(parent=self, caption='Save Result Image')
-            path = url.path()
+            [path, _] = QFileDialog.getSaveFileName(parent=self, caption='Save Result Image', filter='PNG Files (*.png)')
 
             if path != '':
                 with open(path, 'bw') as io:
