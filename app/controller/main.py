@@ -1,10 +1,11 @@
 from io import BytesIO
 
 from PIL.Image import open as img_open
-from PyQt5.QtGui import QPixmap, QPalette, QColor
+from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 
 from ..common import *
+from ..resource import *
 from ..view.main import Ui_MainWindow
 
 
@@ -15,6 +16,10 @@ class MainWindow(Ui_MainWindow, QMainWindow):
         self.setupUi(self)
 
         self.sa_result.setPalette(QPalette(QColor(255, 255, 255)))
+        self.l_alipay.setPixmap(pixmap_from_bytes(image['alipay']))
+        self.l_wechat.setPixmap(pixmap_from_bytes(image['wechat']))
+        self.l_alipay.setScaledContents(True)
+        self.l_wechat.setScaledContents(True)
 
         self.img_inner = None  # type: Image
         self.img_outer = None  # type: Image
@@ -34,9 +39,7 @@ class MainWindow(Ui_MainWindow, QMainWindow):
                 self.img_inner = img_open(io).copy()
                 io.seek(0)
 
-                pixmap = QPixmap()
-                pixmap.loadFromData(io.read())
-                self.l_inner.setPixmap(pixmap)
+                self.l_inner.setPixmap(pixmap_from_bytes(io.read()))
 
     def __pb_outer_clicked(self):
         [path, _] = QFileDialog.getOpenFileName(parent=self, caption='Set Outer Image')
@@ -46,9 +49,7 @@ class MainWindow(Ui_MainWindow, QMainWindow):
                 self.img_outer = img_open(io).copy()
                 io.seek(0)
 
-                pixmap = QPixmap()
-                pixmap.loadFromData(io.read())
-                self.l_outer.setPixmap(pixmap)
+                self.l_outer.setPixmap(pixmap_from_bytes(io.read()))
 
     def __pb_build_clicked(self):
         self.img_result = build_phantom_tank(self.img_inner, self.img_outer)
@@ -59,9 +60,7 @@ class MainWindow(Ui_MainWindow, QMainWindow):
 
             data = io.read()
 
-        pixmap = QPixmap()
-        pixmap.loadFromData(data)
-        self.l_result.setPixmap(pixmap)
+        self.l_result.setPixmap(pixmap_from_bytes(data))
 
     def __cb_dark_clicked(self):
         if self.cb_dark.isChecked():
@@ -71,7 +70,8 @@ class MainWindow(Ui_MainWindow, QMainWindow):
 
     def __pb_save_clicked(self):
         if self.img_result is not None:
-            [path, _] = QFileDialog.getSaveFileName(parent=self, caption='Save Result Image', filter='PNG Files (*.png)')
+            [path, _] = QFileDialog.getSaveFileName(parent=self, caption='Save Result Image',
+                                                    filter='PNG Files (*.png)')
 
             if path != '':
                 with open(path, 'bw') as io:

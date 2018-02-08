@@ -1,6 +1,7 @@
 from PIL.Image import Image, new as image_new
 
 from PIL.ImageOps import invert as image_color_invert
+from PyQt5.QtGui import QPixmap
 
 
 def build_phantom_tank(img_inner: Image, img_outer: Image):
@@ -28,3 +29,9 @@ def build_phantom_tank(img_inner: Image, img_outer: Image):
                 img_temp.putpixel((x, y), (0, 0, 0, a))
 
     return img_temp
+
+
+def pixmap_from_bytes(data: bytes):
+    pixmap = QPixmap()
+    pixmap.loadFromData(data)
+    return pixmap
